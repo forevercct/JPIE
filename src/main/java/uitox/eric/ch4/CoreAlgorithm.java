@@ -3,6 +3,7 @@ package uitox.eric.ch4;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Collections;
 
@@ -21,7 +22,9 @@ public class CoreAlgorithm {
 		// sortObjects();
 		// sortNotComparable();
 		// customSorting();
-		bubbleSortImpl();
+		// bubbleSortImpl();
+		// insertSortImpl();
+		quickSortImpl();
 	}
 
 	@Test
@@ -110,5 +113,60 @@ public class CoreAlgorithm {
 			}
 
 		} while (numberSwitched);
+	}
+
+	public static void insertSortImpl() {
+		final Integer[] numbers = { -3, -5, 1, 7, 4, -2 };
+		final List<Integer> results;
+		results = insertSort(Arrays.asList(numbers));
+		logger.info("After sorting: {}", Arrays.toString(results.toArray()));
+	}
+
+	public static List<Integer> insertSort(final List<Integer> numbers) {
+		final List<Integer> sortedList = new LinkedList<Integer>();
+
+		originalList: for (Integer number : numbers) {
+			for (int i = 0; i < sortedList.size(); i++) {
+				if (number < sortedList.get(i)) {
+					sortedList.add(i, number);
+					continue originalList;
+				}
+			}
+
+			sortedList.add(sortedList.size(), number);
+		}
+
+		return sortedList;
+	}
+
+	public static void quickSortImpl() {
+		final Integer[] numbers = { 24, 3, 85, 43, 20, 45, 67, 64, 34, 87 };
+		final List<Integer> results;
+		results = quickSort(Arrays.asList(numbers));
+		logger.info("After sorting: {}", Arrays.toString(results.toArray()));
+	}
+
+	public static List<Integer> quickSort(final List<Integer> numbers) {
+		if (numbers.size() < 2) {
+			return numbers;
+		}
+
+		final Integer pivot = numbers.get(0);
+		final List<Integer> lower = new ArrayList<Integer>();
+		final List<Integer> higher = new ArrayList<Integer>();
+
+		for (int i = 1; i < numbers.size(); i++) {
+			if (numbers.get(i) < pivot) {
+				lower.add(numbers.get(i));
+			} else {
+				higher.add(numbers.get(i));
+			}
+		}
+
+		final List<Integer> sorted = quickSort(lower);
+		sorted.add(pivot);
+		sorted.addAll(quickSort(higher));
+
+		return sorted;
 	}
 }
