@@ -24,7 +24,9 @@ public class CoreAlgorithm {
 		// customSorting();
 		// bubbleSortImpl();
 		// insertSortImpl();
-		quickSortImpl();
+		// quickSortImpl();
+		// mergeSortImpl();
+		binarySearchImpl();
 	}
 
 	@Test
@@ -169,4 +171,84 @@ public class CoreAlgorithm {
 
 		return sorted;
 	}
+
+	public static void mergeSortImpl() {
+		final List<Integer> numbers = Arrays.asList(26, 5, 77, 1, 61);
+		final List<Integer> results = mergeSort(numbers);
+
+		logger.info("After sorting: {}", Arrays.toString(results.toArray()));
+	}
+
+	public static List<Integer> mergeSort(final List<Integer> values) {
+		if (values.size() < 2)
+			return values;
+
+		final List<Integer> leftHalf = values.subList(0, values.size() / 2);
+		final List<Integer> rightHalf = values.subList(values.size() / 2,
+				values.size());
+
+		return merge(mergeSort(leftHalf), mergeSort(rightHalf));
+	}
+
+	private static List<Integer> merge(final List<Integer> left,
+			final List<Integer> right) {
+		int leftPtr = 0;
+		int rightPtr = 0;
+
+		final List<Integer> merged = new ArrayList<Integer>(left.size()
+				+ right.size());
+
+		while (leftPtr < left.size() && rightPtr < right.size()) {
+			if (left.get(leftPtr) < right.get(rightPtr)) {
+				merged.add(left.get(leftPtr));
+				leftPtr++;
+			} else {
+				merged.add(right.get(rightPtr));
+				rightPtr++;
+			}
+		}
+
+		while (leftPtr < left.size()) {
+			merged.add(left.get(leftPtr));
+			leftPtr++;
+		}
+
+		while (rightPtr < right.size()) {
+			merged.add(right.get(rightPtr));
+			rightPtr++;
+		}
+
+		return merged;
+	}
+
+	public static void binarySearchImpl() {
+		final List<Integer> numbers = Arrays.asList(26, 5, 77, 1, 61);
+		Integer value = new Integer(77);
+		boolean result = binarySearch(numbers, value);
+
+		logger.info("{} is found ? {}", value, result);
+	}
+
+	public static boolean binarySearch(final List<Integer> numbers,
+			final Integer value) {
+
+		if (numbers == null || numbers.isEmpty()) {
+			return false;
+		}
+
+		final Integer comparison = numbers.get(numbers.size() / 2);
+
+		if (value.equals(comparison)) {
+			return true;
+		}
+
+		if (value < comparison) {
+			return binarySearch(numbers.subList(0, numbers.size() / 2), value);
+		} else {
+			return binarySearch(
+					numbers.subList(numbers.size() / 2 + 1, numbers.size()),
+					value);
+		}
+	}
+
 }
