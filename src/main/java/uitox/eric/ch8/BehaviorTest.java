@@ -1,8 +1,12 @@
 package uitox.eric.ch8;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +57,6 @@ public class BehaviorTest {
 		assertFalse(greeting.equals(substring));
 	}
 
-	@Test
 	public void intEquality() {
 		final Integer int1 = Integer.valueOf(new String("128"));
 		final Integer int2 = Integer.valueOf(new String("128"));
@@ -69,26 +72,95 @@ public class BehaviorTest {
 
 		return stack;
 	}
-	
-	@Test
+
 	public void usePushAllA() {
 		final ArrayList<A> list = new ArrayList<A>();
 		for (int i = 0; i < 10; i++) {
 			list.add(new A());
 		}
-		
+
 		final Stack<A> stack = pushAllA(list);
-		//logger.info(stack.pop().toString());
+		// logger.info(stack.pop().toString());
 	}
-	
-	@Test
+
 	public void usePushAllAWithBs() {
 		final ArrayList<B> list = new ArrayList<B>();
 		for (int i = 0; i < 10; i++) {
 			list.add(new B());
 		}
-		
+
 		final Stack<A> stack = pushAllA(list);
 		logger.info(stack.pop().toString());
 	}
+
+	public void mutateBookRecordState() throws NoSuchFieldException,
+			IllegalAccessException {
+		final BookRecord record = new BookRecord("Suzanne Collins",
+				"The Hunger Games");
+
+		final Field author = record.getClass().getDeclaredField("author");
+		author.setAccessible(true);
+		author.set(record, "Catching Fire");
+		logger.info("The author is {}", record.getAuthor());
+	}
+
+	@Test
+	public void showLinkedHashmapProperties() {
+		final LinkedHashMap<Integer, String> linkedHashMap = new LinkedHashMap<Integer, String>();
+
+		linkedHashMap.put(10, "ten");
+		linkedHashMap.put(20, "twenty");
+		linkedHashMap.put(30, "thirty");
+		linkedHashMap.put(40, "forty");
+		linkedHashMap.put(50, "fifty");
+
+		assertEquals("fifty", linkedHashMap.get(50));
+
+		final Iterator<Integer> keyIterator = linkedHashMap.keySet().iterator();
+		assertEquals("ten", linkedHashMap.get(keyIterator.next()));
+		assertEquals("twenty", linkedHashMap.get(keyIterator.next()));
+		assertEquals("thirty", linkedHashMap.get(keyIterator.next()));
+		assertEquals("forty", linkedHashMap.get(keyIterator.next()));
+		assertEquals("fifty", linkedHashMap.get(keyIterator.next()));
+
+		final HashMap<Integer, String> regularHashMap = new HashMap<Integer, String>();
+
+		regularHashMap.put(10, "ten");
+		regularHashMap.put(20, "twenty");
+		regularHashMap.put(30, "thirty");
+		regularHashMap.put(40, "forty");
+		regularHashMap.put(50, "fifty");
+
+		final ArrayList<String> hashMapValues = new ArrayList<String>(
+				regularHashMap.values());
+		final ArrayList<String> linkedHashMapValues = new ArrayList<String>(
+				linkedHashMap.values());
+
+		logger.info("hashMapValues: {}",
+				Arrays.toString(hashMapValues.toArray()));
+		logger.info("linkedHashMapValues: {}",
+				Arrays.toString(linkedHashMapValues.toArray()));
+
+	}
+	
+//	@Test
+//	public void run() {
+//		List<Integer> ints = new ArrayList<Integer>();
+//		ints.add(1);
+//		ints.add(2);
+//		ints.add(3);
+//
+//		List<Integer> newInts = new ArrayList<Integer>();
+//		ints.forEach(i -> {
+//			newInts.add(i + 10);
+//		});
+//
+//		for (int i = 0; i < ints.size(); i++) {
+//			assert ints.get(i) == newInts.get(i);
+//		}
+//
+//		assert ints.size() == newInts.size();
+//
+//		System.out.println("Validated");
+//	}
 }
